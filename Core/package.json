@@ -1,0 +1,57 @@
+{
+  "name": "fabrikage-platform",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "Fabrikage.CoreProtocols",
+    "Fabrikage.AutoExecution",
+    "Fabrikage.IntelligenceMatrix",
+    "Fabrikage.ProvenanceLedger",
+    "Fabrikage.ObservabilityAtlas",
+    "Portal"
+  ],
+  "scripts": {
+    "bootstrap": "lerna bootstrap",
+    "build": "lerna run build --stream",
+    "test": "lerna run test --stream",
+    "lint": "lerna run lint --stream",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
+    "prepare": "husky install",
+    "dev": "lerna run dev --parallel",
+    "clean": "lerna clean -y && rimraf node_modules"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.0",
+    "@types/node": "^18.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.0.0",
+    "@typescript-eslint/parser": "^5.0.0",
+    "eslint": "^8.0.0",
+    "eslint-config-prettier": "^8.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jest": "^27.0.0",
+    "eslint-plugin-jsx-a11y": "^6.6.1",
+    "eslint-plugin-react": "^7.31.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "husky": "^8.0.0",
+    "jest": "^29.0.0",
+    "lerna": "^6.0.0",
+    "lint-staged": "^13.0.0",
+    "prettier": "^2.8.0",
+    "rimraf": "^4.0.0",
+    "ts-jest": "^29.0.0",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=16.14.0",
+    "npm": ">=8.0.0"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ]
+  }
+}

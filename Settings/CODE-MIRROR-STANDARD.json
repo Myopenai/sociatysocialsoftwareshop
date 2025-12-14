@@ -1,0 +1,84 @@
+{
+  "version": "3.0.0",
+  "status": "PERMANENT AKTIV",
+  "type": "PRODUCTION_STANDARD",
+  "category": "CODE_QUALITY",
+  "standard": "IBM STANDARD - PERMANENT AKTIV",
+  "description": "Code-Mirror-System - Speichert NUR fehlerfreien Code als Standard für alle Code-Handlungen",
+  "lastUpdated": "2025-01-27T00:00:00Z",
+  "branding": ".T. TogetherSystems - ModularFlux Architecture",
+  
+  "principle": {
+    "core": "Der Mirror ist die einzige Quelle für fehlerfreien Code",
+    "rule": "NUR fehlerfreier Code wird im Mirror gespeichert",
+    "usage": "Bei JEDER Code-Handlung MUSS der Mirror konsultiert werden",
+    "validation": "Code MUSS gegen Mirror validiert werden bevor er gespeichert wird"
+  },
+  
+  "workflow": {
+    "before_code_action": {
+      "step1": "Code-Mirror konsultieren (ci/spec-mirror/code-mirror.js)",
+      "step2": "Prüfen ob fehlerfreier Code im Mirror existiert",
+      "step3": "Code aus Mirror verwenden falls vorhanden und aktuell",
+      "step4": "Neuen Code gegen Mirror validieren",
+      "description": "VORAB jeder Code-Handlung den Mirror konsultieren"
+    },
+    
+    "during_code_action": {
+      "step1": "Jeden Code-Schritt gegen Mirror validieren",
+      "step2": "Nur fehlerfreien Code weiterverarbeiten",
+      "step3": "Fehlerhaften Code sofort korrigieren",
+      "description": "WÄHREND der Code-Handlung kontinuierlich validieren"
+    },
+    
+    "after_code_action": {
+      "step1": "Code final gegen Mirror validieren",
+      "step2": "NUR wenn fehlerfrei → im Mirror speichern",
+      "step3": "Mirror synchronisieren",
+      "step4": "Alle fehlerfreien Dateien im Mirror aktualisieren",
+      "description": "NACH der Code-Handlung nur fehlerfreien Code speichern"
+    }
+  },
+  
+  "validation": {
+    "error_patterns": "Prüft gegen Settings/error-patterns.json",
+    "branding": "Prüft auf TogetherSystems/ModularFlux Branding",
+    "version": "Prüft auf Version 3.0.0",
+    "error_handling": "Prüft auf errorFixSystem statt console.error",
+    "api_calls": "Prüft auf apiErrorHandler statt fetch()",
+    "hardcoded_values": "Prüft auf apiConfigLoader statt localhost",
+    "syntax": "Prüft auf Syntax-Fehler",
+    "module_contracts": "Prüft gegen Module Contracts aus specs/"
+  },
+  
+  "storage": {
+    "location": "ci/spec-mirror/mirror/",
+    "format": "Original-Dateien + .meta.json für Metadaten",
+    "hash_index": ".hash-index.json für Deduplizierung",
+    "rule": "NUR fehlerfreier Code wird gespeichert"
+  },
+  
+  "integration": {
+    "cursorrules": "Integriert in .cursorrules als VORAB-Schritt",
+    "ci_cd": "Integriert in Live-Mirror-Pipeline",
+    "development": "Bei Entwicklung, Fehlerverbesserungen, Bugfixes",
+    "standard": "Standard in Fabrikage, Funktion, Prozess, Industrial Software Production"
+  },
+  
+  "guardRules": {
+    "permanent": true,
+    "cannotDeactivate": true,
+    "highRiskChanges": true,
+    "mustUseMirror": "Jede Code-Handlung MUSS Mirror verwenden",
+    "onlyErrorFree": "NUR fehlerfreier Code im Mirror"
+  },
+  
+  "documentation": {
+    "implementation": "ci/spec-mirror/code-mirror.js",
+    "usage": ".cursorrules - BEI JEDER Code-Änderung",
+    "standard": "settings/CODE-MIRROR-STANDARD.json"
+  }
+}
+
+
+

@@ -1,0 +1,49 @@
+{
+  "id": "F000002",
+  "name": "Solar-Energie-Ertrag",
+  "description": "Berechnet den Energieertrag einer Solaranlage",
+  "inputs": [
+    {
+      "name": "Flaeche",
+      "type": "number",
+      "dimension": "m2",
+      "constraints": { "min": 0 }
+    },
+    {
+      "name": "Wirkungsgrad",
+      "type": "number",
+      "dimension": "percent",
+      "constraints": { "min": 0, "max": 100 }
+    },
+    {
+      "name": "Einstrahlung",
+      "type": "number",
+      "dimension": "W/m2",
+      "constraints": { "min": 0 }
+    }
+  ],
+  "output": {
+    "name": "Leistung",
+    "type": "number",
+    "dimension": "kW"
+  },
+  "domain": ["Energie", "Physik"],
+  "formula": "P = A * η * G / 1000",
+  "implementation": {
+    "python": "def solar_ertrag(flaeche, wirkungsgrad, einstrahlung):\n    return (flaeche * wirkungsgrad * einstrahlung) / 1000",
+    "javascript": "function solarErtrag(flaeche, wirkungsgrad, einstrahlung) {\n    return (flaeche * wirkungsgrad * einstrahlung) / 1000;\n}",
+    "rust": "fn solar_ertrag(flaeche: f64, wirkungsgrad: f64, einstrahlung: f64) -> f64 {\n    (flaeche * wirkungsgrad * einstrahlung) / 1000.0\n}",
+    "go": "func solarErtrag(flaeche, wirkungsgrad, einstrahlung float64) float64 {\n    return (flaeche * wirkungsgrad * einstrahlung) / 1000\n}",
+    "java": "public static double solarErtrag(double flaeche, double wirkungsgrad, double einstrahlung) {\n    return (flaeche * wirkungsgrad * einstrahlung) / 1000.0;\n}",
+    "cpp": "double solarErtrag(double flaeche, double wirkungsgrad, double einstrahlung) {\n    return (flaeche * wirkungsgrad * einstrahlung) / 1000.0;\n}",
+    "csharp": "public static double SolarErtrag(double flaeche, double wirkungsgrad, double einstrahlung) {\n    return (flaeche * wirkungsgrad * einstrahlung) / 1000.0;\n}",
+    "swift": "func solarErtrag(flaeche: Double, wirkungsgrad: Double, einstrahlung: Double) -> Double {\n    return (flaeche * wirkungsgrad * einstrahlung) / 1000\n}",
+    "kotlin": "fun solarErtrag(flaeche: Double, wirkungsgrad: Double, einstrahlung: Double): Double {\n    return (flaeche * wirkungsgrad * einstrahlung) / 1000.0\n}",
+    "typescript": "function solarErtrag(flaeche: number, wirkungsgrad: number, einstrahlung: number): number {\n    return (flaeche * wirkungsgrad * einstrahlung) / 1000;\n}"
+  },
+  "dependencies": [],
+  "complexity": "low",
+  "tags": ["solar", "energie", "leistung", "berechnung"]
+}
+
+

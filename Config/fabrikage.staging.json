@@ -1,0 +1,60 @@
+{
+  "system": {
+    "name": "Fabrikage Staging System",
+    "environment": "staging",
+    "logLevel": "info"
+  },
+  "database": {
+    "host": "staging-db.example.com",
+    "port": 5432,
+    "name": "fabrikage_staging",
+    "user": "staging_user",
+    "connectionString": "Server=staging-db.example.com;Database=fabrikage_staging;User Id=staging_user;Password=staging_password;"
+  },
+  "api": {
+    "port": 3000,
+    "baseUrl": "https://staging.fabrikage.example.com",
+    "corsOrigins": ["https://staging.fabrikage.example.com"],
+    "enableSwagger": false
+  },
+  "modules": {
+    "autoExecution": {
+      "enabled": true,
+      "schedule": "0 * * * *"
+    },
+    "coreProtocols": {
+      "apiEndpoint": "https://staging.fabrikage.example.com/api"
+    }
+  },
+  "monitoring": {
+    "enabled": true,
+    "prometheus": {
+      "port": 9090,
+      "endpoint": "/metrics"
+    },
+    "grafana": {
+      "port": 3000,
+      "username": "admin",
+      "password": "staging-password-123"
+    },
+    "alertmanager": {
+      "port": 9093
+    }
+  },
+  "externalServices": {
+    "email": {
+      "provider": "smtp",
+      "host": "smtp.sendgrid.net",
+      "port": 587,
+      "secure": true,
+      "auth": {
+        "user": "apikey",
+        "pass": "SG.your-sendgrid-api-key"
+      }
+    }
+  },
+  "logging": {
+    "level": "info",
+    "file": "fabrikage-staging.log"
+  }
+}

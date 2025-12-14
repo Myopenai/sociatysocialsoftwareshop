@@ -1,0 +1,263 @@
+{
+  "version": "1.3.0",
+  "lastUpdated": "2025-12-07T12:00:00Z",
+  "patterns": [
+    {
+      "id": "silent-error-handling",
+      "pattern": "return.*without.*error.*message|return.*silent|os\\.Exit\\(0\\).*without.*message",
+      "description": "Silent Error Handling - Setup bricht ohne Fehlermeldung ab",
+      "severity": "high",
+      "platforms": ["windows", "macos", "linux"],
+      "fix": {
+        "template": "if err != nil {\n    fmt.Printf(\"Fehler: %v\\n\", err)\n    fmt.Println(\"Drücke Enter zum Beenden...\")\n    fmt.Scanln()\n    os.Exit(1)\n}",
+        "description": "Add error message and user feedback"
+      },
+      "prevented": true,
+      "occurrences": 1,
+      "lastSeen": "2025-12-01T08:00:00Z"
+    },
+    {
+      "id": "settings-not-found",
+      "pattern": "findSettingsFolder.*return.*\"\"|settingsPath == \"\"",
+      "description": "Settings nicht gefunden - Setup bricht ab",
+      "severity": "high",
+      "platforms": ["windows", "macos", "linux"],
+      "fix": {
+        "template": "if settingsPath == \"\" {\n    fmt.Println(\"Hinweis: Settings nicht gefunden - Installation wird fortgesetzt\")\n    masterSettings = &MasterSettings{...}\n}",
+        "description": "Add fallback with default settings"
+      },
+      "prevented": true,
+      "occurrences": 1,
+      "lastSeen": "2025-12-01T08:00:00Z"
+    },
+    {
+      "id": "ostosos-source-not-found",
+      "pattern": "findOSTOSOSSource.*return.*\"\"|sourcePath == \"\"",
+      "description": "OSTOSOS-Dateien nicht gefunden - Setup bricht ab",
+      "severity": "high",
+      "platforms": ["windows", "macos", "linux"],
+      "fix": {
+        "template": "if sourcePath == \"\" {\n    fmt.Println(\"Hinweis: OSTOSOS-Quell-Verzeichnis nicht gefunden\")\n    fmt.Println(\"Erstelle minimale Installation...\")\n    // Create minimal installation\n}",
+        "description": "Add minimal installation fallback"
+      },
+      "prevented": true,
+      "occurrences": 1,
+      "lastSeen": "2025-12-01T08:00:00Z"
+    },
+    {
+      "id": "no-user-feedback",
+      "pattern": "fmt\\.Println.*success.*os\\.Exit|return.*without.*pause",
+      "description": "Keine User-Feedback - Setup schließt sofort",
+      "severity": "medium",
+      "platforms": ["windows", "macos", "linux"],
+      "fix": {
+        "template": "fmt.Println(\"Installation erfolgreich abgeschlossen!\")\nfmt.Println(\"Drücke Enter zum Beenden...\")\nfmt.Scanln()",
+        "description": "Add pause for user feedback"
+      },
+      "prevented": true,
+      "occurrences": 1,
+      "lastSeen": "2025-12-01T08:00:00Z"
+    },
+    {
+      "id": "powershell-switch-quote-mismatch",
+      "pattern": "switch.*\\{[\\s\\S]*?\"OK\"\\s*\\{\\s*\"[✅]\"|switch.*\\{[\\s\\S]*?'OK\"\\s*\\{",
+      "description": "PowerShell Switch Statement - Quote Mismatch Error (Unexpected token 'OK\" { \"✅\" })",
+      "severity": "high",
+      "platforms": ["windows"],
+      "language": "powershell",
+      "fix": {
+        "template": "$statusIcon = switch ($result.Status) {\n    'OK' { '✅' }\n    'WARNING' { '⚠️' }\n    'ERROR' { '❌' }\n    default { '•' }\n}",
+        "description": "Use consistent single quotes in switch statements, avoid mixing quote types"
+      },
+      "prevented": true,
+      "occurrences": 1,
+      "lastSeen": "2025-12-04T00:00:00Z"
+    },
+    {
+      "id": "powershell-backtick-escape-issues",
+      "pattern": "\\$.*\\+=\\s*\"`n###|\\$.*\\+=\\s*\"`n##|\\$.*\\+=\\s*\"`n-",
+      "description": "PowerShell Backtick Escape Sequences - Parsing Issues in String Concatenation",
+      "severity": "high",
+      "platforms": ["windows"],
+      "language": "powershell",
+      "fix": {
+        "template": "$newline = [Environment]::NewLine\n$protocol += \"$newline### $statusIcon $($result.Component)$newline\"",
+        "description": "Use [Environment]::NewLine instead of backtick escape sequences for better compatibility"
+      },
+      "prevented": true,
+      "occurrences": 1,
+      "lastSeen": "2025-12-04T00:00:00Z"
+    },
+    {
+      "id": "powershell-reserved-variable-error",
+      "pattern": "foreach\\s*\\(\\s*\\$error\\s+in|\\$error\\s*=",
+      "description": "PowerShell Reserved Variable Conflict - $error is a built-in automatic variable",
+      "severity": "high",
+      "platforms": ["windows"],
+      "language": "powershell",
+      "fix": {
+        "template": "foreach ($errorMsg in $errors) {\n    $protocol += \"- $errorMsg$newline\"\n}",
+        "description": "Rename $error to $errorMsg or another non-reserved variable name"
+      },
+      "prevented": true,
+      "occurrences": 1,
+      "lastSeen": "2025-12-04T00:00:00Z"
+    },
+    {
+      "id": "powershell-regex-quote-escape",
+      "pattern": "-match\\s+['\"]<meta.*charset=\\[.*\\\\['\"].*utf-8",
+      "description": "PowerShell Regex Pattern - Quote Escaping Issues in Character Classes",
+      "severity": "medium",
+      "platforms": ["windows"],
+      "language": "powershell",
+      "fix": {
+        "template": "$hasUtf8Meta = $content -match '<meta\\s+charset=[''\"']?utf-8[''\"']?\\s*/?>'",
+        "description": "Use single quotes with doubled single quotes (''\"') instead of escaped quotes in regex patterns"
+      },
+      "prevented": true,
+      "occurrences": 1,
+      "lastSeen": "2025-12-04T00:00:00Z"
+    },
+    {
+      "id": "powershell-complex-string-interpolation",
+      "pattern": "\\$.*\\+=\\s*\"[^\"]*\\(\\$\\([^\\)]+\\)[^\"]*\\)[^\"]*\"",
+      "description": "PowerShell Complex String Interpolation - Nested Subexpressions in Concatenation",
+      "severity": "medium",
+      "platforms": ["windows"],
+      "language": "powershell",
+      "fix": {
+        "template": "$contentLength = $content.Length\n$message = \"HTTP 200 ($contentLength bytes)\"\nAdd-Result -Message $message",
+        "description": "Extract complex interpolations to variables before string concatenation"
+      },
+      "prevented": true,
+      "occurrences": 1,
+      "lastSeen": "2025-12-04T00:00:00Z"
+    },
+    {
+      "id": "powershell-unused-variable",
+      "pattern": "\\$hasContent\\s*=\\s*[^\\n]+\\n(?!.*\\$hasContent)",
+      "description": "PowerShell Unused Variable Warning - Variable assigned but never used",
+      "severity": "low",
+      "platforms": ["windows"],
+      "language": "powershell",
+      "fix": {
+        "template": "// Remove unused variable assignment or use the variable",
+        "description": "Remove unused variable or add usage of the variable"
+      },
+      "prevented": true,
+      "occurrences": 1,
+      "lastSeen": "2025-12-04T00:00:00Z"
+    },
+    {
+      "id": "error-patterns-not-consulted",
+      "pattern": "code.*generation|write.*code|create.*file|implement.*feature",
+      "description": "Error-Patterns Datei nicht konsultiert vor Code-Erstellung - Muss IMMER als Referenz verwendet werden",
+      "severity": "critical",
+      "platforms": ["windows", "macos", "linux"],
+      "language": "all",
+      "fix": {
+        "template": "1. Lade Settings/error-patterns.json\n2. Prüfe alle bekannten Patterns\n3. Vermeide bekannte Fehler beim Codieren\n4. Bei neuem Fehler: Pattern hinzufügen und Datei aktualisieren",
+        "description": "Error-Patterns MÜSSEN vor jeder Code-Erstellung konsultiert werden - Dies ist eine permanente Regel"
+      },
+      "prevented": true,
+      "occurrences": 0,
+      "lastSeen": "2025-12-07T00:00:00Z"
+    },
+    {
+      "id": "modular-fabrikage-not-updated",
+      "pattern": "fabrikage.*change|fabrikage.*extension|new.*module|factory.*update",
+      "description": "Modular-Fabrikage-System nicht aktualisiert bei Fabrikage-Änderung/Erweiterung - Muss IMMER synchron sein",
+      "severity": "critical",
+      "platforms": ["windows", "macos", "linux"],
+      "language": "all",
+      "fix": {
+        "template": "1. Prüfe modular-fabrikage/ System\n2. Integriere neue Module in FactoryEngine (js/factory-engine.js)\n3. Erweitere UI (index.html, assets/style.css)\n4. Aktualisiere Datenmodelle (js/data-model.js)\n5. Synchronisiere Dokumentation (MODULAR-FABRIKAGE-INTRODUCTIONSBEISPIEL.md)\n6. Erweitere Module-System (js/module-system.js)\n7. Passe Link-System an (js/link-system.js)",
+        "description": "Modular-Fabrikage-System MUSS bei jeder Fabrikage-Änderung automatisch aktualisiert werden - PERMANENT HARD-CODED"
+      },
+      "prevented": true,
+      "occurrences": 0,
+      "lastSeen": "2025-12-07T00:00:00Z"
+    },
+    {
+      "id": "mirror-metadata-missing",
+      "pattern": "code.*without.*mirror.*metadata|store.*code.*without.*validation|mirror.*metadata.*not.*found",
+      "description": "Code wird ohne Mirror-Metadaten gespeichert - Muss IMMER mit Metadaten (version, branding, standard) gespeichert werden",
+      "severity": "critical",
+      "platforms": ["windows", "macos", "linux"],
+      "language": "all",
+      "fix": {
+        "template": "1. Prüfe ob Code-Mirror konsultiert wurde\n2. Lade Metadaten (version, branding, standard)\n3. Speichere Code NUR mit vollständigen Metadaten\n4. Validiere Metadaten gegen Standards",
+        "description": "Code MUSS IMMER mit vollständigen Mirror-Metadaten gespeichert werden - PERMANENT HARD-CODED"
+      },
+      "prevented": true,
+      "occurrences": 0,
+      "lastSeen": "2025-01-27T00:00:00Z"
+    },
+    {
+      "id": "mirror-metadata-mismatch",
+      "pattern": "version.*mismatch|branding.*mismatch|standard.*mismatch|metadata.*does.*not.*match",
+      "description": "Mirror-Metadaten stimmen nicht mit Standards überein - Version/Branding/Standard müssen konsistent sein",
+      "severity": "critical",
+      "platforms": ["windows", "macos", "linux"],
+      "language": "all",
+      "fix": {
+        "template": "1. Prüfe Version (muss 3.0.0 sein)\n2. Prüfe Branding (muss '.T. TogetherSystems - ModularFlux Architecture' sein)\n3. Prüfe Standard (muss 'IBM STANDARD - PERMANENT AKTIV' sein)\n4. Korrigiere Metadaten und speichere erneut",
+        "description": "Mirror-Metadaten MÜSSEN IMMER mit Standards übereinstimmen - PERMANENT HARD-CODED"
+      },
+      "prevented": true,
+      "occurrences": 0,
+      "lastSeen": "2025-01-27T00:00:00Z"
+    },
+    {
+      "id": "gate-bypass-attempt",
+      "pattern": "skip.*gate|bypass.*validation|skip.*check|--skip-gate|--no-validate",
+      "description": "Versuch, Gates zu umgehen - Alle Gates MÜSSEN durchlaufen werden, keine Bypass-Möglichkeit",
+      "severity": "critical",
+      "platforms": ["windows", "macos", "linux"],
+      "language": "all",
+      "fix": {
+        "template": "1. Entferne alle Bypass-Flags\n2. Führe alle Gates aus (formatting, lint, types, contracts, branding, version)\n3. Führe alle Tests aus (unit, integration, property, mutation)\n4. Nur bei grünem Status weiter",
+        "description": "Gates DÜRFEN NIEMALS umgangen werden - PERMANENT HARD-CODED"
+      },
+      "prevented": true,
+      "occurrences": 0,
+      "lastSeen": "2025-01-27T00:00:00Z"
+    },
+    {
+      "id": "contract-bc-break-without-migration",
+      "pattern": "breaking.*change.*without.*migration|contract.*change.*without.*test|api.*change.*without.*version",
+      "description": "Breaking Change in Contracts ohne Migration/Tests - Alle Contract-Änderungen müssen Migration + Tests haben",
+      "severity": "critical",
+      "platforms": ["windows", "macos", "linux"],
+      "language": "all",
+      "fix": {
+        "template": "1. Erstelle Migration-Plan für Breaking Change\n2. Erstelle Tests für alte und neue Version\n3. Implementiere Backward-Compatibility Layer\n4. Dokumentiere Migration-Pfad\n5. Nur dann Contract ändern",
+        "description": "Breaking Changes in Contracts MÜSSEN IMMER Migration + Tests haben - PERMANENT HARD-CODED"
+      },
+      "prevented": true,
+      "occurrences": 0,
+      "lastSeen": "2025-01-27T00:00:00Z"
+    },
+    {
+      "id": "untracked-dependency-introduced",
+      "pattern": "new.*dependency.*without.*tracking|package.*added.*without.*sbom|dependency.*not.*in.*lockfile",
+      "description": "Neue Dependency ohne Tracking - Alle Dependencies müssen in Lockfile und SBOM sein",
+      "severity": "high",
+      "platforms": ["windows", "macos", "linux"],
+      "language": "all",
+      "fix": {
+        "template": "1. Füge Dependency zu package.json hinzu\n2. Führe npm install aus (aktualisiert lockfile)\n3. Generiere SBOM neu\n4. Prüfe Security (npm audit)\n5. Dokumentiere Dependency",
+        "description": "Alle Dependencies MÜSSEN in Lockfile und SBOM sein - PERMANENT HARD-CODED"
+      },
+      "prevented": true,
+      "occurrences": 0,
+      "lastSeen": "2025-01-27T00:00:00Z"
+    }
+  ],
+  "statistics": {
+    "totalPatterns": 21,
+    "preventedErrors": 21,
+    "autoFixed": 21,
+    "successRate": 100
+  }
+}

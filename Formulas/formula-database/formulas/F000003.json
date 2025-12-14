@@ -1,0 +1,37 @@
+{
+  "id": "F000003",
+  "name": "Zeitreihen-Mittelwert",
+  "description": "Berechnet den Mittelwert einer Zeitreihe",
+  "inputs": [
+    {
+      "name": "Daten",
+      "type": "array",
+      "dimension": "values",
+      "constraints": { "minLength": 1 }
+    }
+  ],
+  "output": {
+    "name": "Mittelwert",
+    "type": "number",
+    "dimension": "value"
+  },
+  "domain": ["Statistik", "Wissenschaft"],
+  "formula": "μ = (1/n) * Σx_i",
+  "implementation": {
+    "python": "def zeitreihen_mittelwert(daten):\n    return sum(daten) / len(daten)",
+    "javascript": "function zeitreihenMittelwert(daten) {\n    return daten.reduce((a, b) => a + b, 0) / daten.length;\n}",
+    "rust": "fn zeitreihen_mittelwert(daten: &[f64]) -> f64 {\n    daten.iter().sum::<f64>() / daten.len() as f64\n}",
+    "go": "func zeitreihenMittelwert(daten []float64) float64 {\n    sum := 0.0\n    for _, v := range daten {\n        sum += v\n    }\n    return sum / float64(len(daten))\n}",
+    "java": "public static double zeitreihenMittelwert(double[] daten) {\n    return Arrays.stream(daten).sum() / daten.length;\n}",
+    "cpp": "double zeitreihenMittelwert(vector<double>& daten) {\n    double sum = accumulate(daten.begin(), daten.end(), 0.0);\n    return sum / daten.size();\n}",
+    "csharp": "public static double ZeitreihenMittelwert(double[] daten) {\n    return daten.Sum() / daten.Length;\n}",
+    "swift": "func zeitreihenMittelwert(daten: [Double]) -> Double {\n    return daten.reduce(0, +) / Double(daten.count)\n}",
+    "kotlin": "fun zeitreihenMittelwert(daten: DoubleArray): Double {\n    return daten.average()\n}",
+    "typescript": "function zeitreihenMittelwert(daten: number[]): number {\n    return daten.reduce((a, b) => a + b, 0) / daten.length;\n}"
+  },
+  "dependencies": [],
+  "complexity": "low",
+  "tags": ["statistik", "mittelwert", "zeitreihe", "analyse"]
+}
+
+

@@ -1,0 +1,26 @@
+watch:
+  basePath: "./workspace"
+  ignored:
+    - "**/node_modules/**"
+    - "**/.git/**"
+    - "**/tmp/**"
+    - "**/logs/**"
+    - "**/dist/**"
+
+mirror:
+  basePath: "./mirror"
+  mode: "stage-then-promote"
+
+pipeline:
+  buildCommand: "npm run build"
+  testCommand: "npm test"
+  timeoutMs: 900000
+
+runtime:
+  requiredDirs:
+    - "logs"
+    - "data"
+    - "tmp"
+    - "settings"
+    - "workspace"
+    - "mirror"

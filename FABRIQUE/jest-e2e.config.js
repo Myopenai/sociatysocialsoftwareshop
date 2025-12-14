@@ -1,0 +1,30 @@
+module.exports = {
+  moduleFileExtensions: ['js', 'json', 'ts'],
+  rootDir: '.',
+  testEnvironment: 'node',
+  testRegex: '.e2e-spec.ts$',
+  transform: {
+    '^.+\\.(t|j)s$': 'ts-jest',
+  },
+  collectCoverageFrom: [
+    'src/**/*.(t|j)s',
+    '!**/node_modules/**',
+    '!**/test/**',
+    '!**/dist/**',
+    '!**/coverage/**',
+    '!**/*.module.ts',
+  ],
+  coverageDirectory: './coverage-e2e',
+  coverageReporters: ['text', 'lcov', 'clover', 'html'],
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/src/$1',
+    '^src/(.*)$': '<rootDir>/src/$1',
+  },
+  testTimeout: 30000,
+  setupFilesAfterEnv: ['<rootDir>/test/test-setup.e2e.ts'],
+  globalSetup: '<rootDir>/test/global-setup.e2e.ts',
+  verbose: true,
+  bail: true,
+  detectOpenHandles: true,
+  forceExit: true,
+};

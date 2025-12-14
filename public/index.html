@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>FABRIKAGE – Selbstprogrammierende AI‑Code‑Fabrik</title>
+  <meta name="description" content="Ein-Klick Fabrikage: Auto-Wiring, AI-Code-Generator, Fixboxes, Provenance, Observability, Marketplace – offen als Firmenportal auf GitHub." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0a0f1a;
+      --bg2:#0d1324;
+      --brand:#6ea8fe;
+      --accent:#9c6bff;
+      --accent2:#29e4ff;
+      --text:#e8eefb;
+      --muted:#9aa6bf;
+      --ok:#36d399;
+      --warn:#fbbf24;
+      --danger:#f87171;
+      --glass:rgba(255,255,255,0.06);
+      --border:rgba(255,255,255,0.12);
+      --shadow:0 20px 40px rgba(0,0,0,0.35);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
+      background:
+        radial-gradient(1200px 600px at 10% 10%, rgba(109,88,255,0.15), transparent 60%),
+        radial-gradient(1000px 800px at 90% 30%, rgba(41,228,255,0.14), transparent 70%),
+        linear-gradient(180deg, var(--bg), var(--bg2) 60%, var(--bg));
+      color:var(--text);
+      letter-spacing:0.2px;
+    }
+    a{color:var(--brand);text-decoration:none}
+    header{
+      position:sticky;top:0;z-index:1000;
+      backdrop-filter:saturate(120%) blur(10px);
+      background:linear-gradient(180deg, rgba(13,19,36,0.85), rgba(13,19,36,0.55));
+      border-bottom:1px solid var(--border);
+    }
+    .nav{
+      max-width:1180px;margin:0 auto;padding:14px 20px;
+      display:flex;align-items:center;gap:18px;justify-content:space-between;
+    }
+    .brand{
+      display:flex;align-items:center;gap:12px;font-weight:800;font-size:18px;
+    }
+    .logo{
+      width:28px;height:28px;display:inline-grid;place-items:center;
+      border-radius:6px;background:linear-gradient(135deg, var(--accent), var(--accent2));
+      box-shadow:0 6px 18px rgba(156,107,255,0.35);
+    }
+    .menu{display:flex;gap:18px;flex-wrap:wrap}
+    .menu a{color:var(--text);opacity:0.86}
+    .cta{
+      padding:10px 16px;border-radius:10px;font-weight:600;
+      background:linear-gradient(135deg, var(--brand), var(--accent2));
+      color:#07111f;box-shadow:0 8px 24px rgba(110,168,254,0.35);
+    }
+    /* Hero */
+    .hero{
+      max-width:1180px;margin:0 auto;padding:72px 20px 36px;
+      display:grid;grid-template-columns:1.1fr 0.9fr;gap:28px;align-items:center;
+    }
+    .hero h1{font-size:42px;line-height:1.06;margin:0 0 16px}
+    .hero p{color:var(--muted);font-size:16px;margin:0 0 24px}
+    .actions{display:flex;gap:12px;flex-wrap:wrap}
+    .btn{
+      padding:12px 18px;border-radius:12px;font-weight:700;border:1px solid var(--border);
+      background:var(--glass);color:var(--text)
+    }
+    .btn.primary{
+      background:linear-gradient(135deg, var(--brand), var(--accent));color:#06101e;border:none
+    }
+
+    /* 3D morph canvas (CSS-only illusion) */
+    .morph{
+      position:relative;height:360px;border-radius:20px;
+      background:radial-gradient(800px 320px at 15% 10%, rgba(110,168,254,0.12), transparent 50%),
+                 linear-gradient(135deg, rgba(156,107,255,0.12), rgba(41,228,255,0.08));
+      border:1px solid var(--border);
+      overflow:hidden;
+      box-shadow:var(--shadow);
+      transform-style:preserve-3d;
+      perspective:900px;
+    }
+    .node{
+      position:absolute;width:140px;height:88px;border-radius:14px;
+      background:linear-gradient(135deg, rgba(156,107,255,0.35), rgba(41,228,255,0.28));
+      border:1px solid rgba(255,255,255,0.18);
+      box-shadow:0 14px 40px rgba(0,0,0,0.25);
+      animation:float 8s ease-in-out infinite;
+    }
+    .node::after{
+      content:"";position:absolute;inset:0;border-radius:14px;
+      box-shadow:inset 0 0 40px rgba(255,255,255,0.06);
+    }
+    .wire{
+      position:absolute;height:2px;background:linear-gradient(90deg, var(--accent2), var(--accent));
+      filter:drop-shadow(0 0 8px rgba(41,228,255,0.4));
+      transform-origin:left center;opacity:0.9;
+    }
+    @keyframes float{
+      0%{transform:translateZ(0) translateY(0) rotateX(0deg) rotateY(0deg)}
+      50%{transform:translateZ(40px) translateY(-10px) rotateX(6deg) rotateY(-5deg)}
+      100%{transform:translateZ(0) translateY(0) rotateX(0deg) rotateY(0deg)}
+    }
+    /* Rotierender CEOC-Zirkel */
+    .circle{
+      position:absolute;right:20px;bottom:20px;width:160px;height:160px;border-radius:50%;
+      border:2px dashed rgba(255,255,255,0.2);
+      display:grid;place-items:center;
+      animation:spin 22s linear infinite;
+    }
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .dot{
+      position:absolute;width:16px;height:16px;border-radius:50%;
+      background:radial-gradient(circle at 30% 30%, #fff, #b7d6ff);
+      box-shadow:0 0 16px rgba(110,168,254,0.65);
+    }
+
+    /* Sections */
+    section{
+      max-width:1180px;margin:0 auto;padding:38px 20px;border-top:1px solid var(--border)
+    }
+    section h2{font-size:28px;margin:0 0 14px}
+    section p{color:var(--muted)}
+
+    .grid{
+      display:grid;grid-template-columns:repeat(3,1fr);gap:16px
+    }
+    .card{
+      background:var(--glass);border:1px solid var(--border);border-radius:16px;padding:16px;
+      box-shadow:var(--shadow)
+    }
+    .card h3{margin:0 0 8px;font-size:18px}
+    .list{margin:0;padding-left:18px;color:var(--muted)}
+    .pill{display:inline-block;padding:6px 10px;border-radius:999px;margin:4px 6px 0 0;
+      background:rgba(110,168,254,0.15);border:1px solid rgba(110,168,254,0.35);color:#bcd7ff;font-size:13px}
+
+    /* Footer */
+    footer{
+      max-width:1180px;margin:40px auto;padding:20px;color:var(--muted);
+      border-top:1px solid var(--border)
+    }
+
+    /* Responsive */
+    @media (max-width:980px){
+      .hero{grid-template-columns:1fr}
+      .morph{height:280px}
+      .grid{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="nav">
+      <div class="brand">
+        <span class="logo">🏭</span>
+        <span>FABRIKAGE</span>
+      </div>
+      <nav class="menu" aria-label="Hauptnavigation">
+        <a href="#vision">Vision</a>
+        <a href="#ceoc">CEOC‑Zirkel</a>
+        <a href="#teilnahme">Teilnahme</a>
+        <a href="#module">Modulkatalog</a>
+        <a href="#architektur">Architektur</a>
+        <a href="#cicd">CI/CD</a>
+        <a href="#sicherheit">Sicherheit</a>
+        <a href="#roadmap">Roadmap</a>
+        <a href="#marketplace">Marketplace</a>
+      </nav>
+      <a class="cta" href="#start">Jetzt starten</a>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <div class="hero" id="start">
+      <div>
+        <h1>Die selbstprogrammierende AI‑Code‑Fabrik</h1>
+        <p>Ein Klick, ein Prompt. Alles andere erledigt das System: Auto‑Wiring, Code‑Generierung, Tests, Signaturen, Bundles, Deployment, Monitoring.</p>
+        <div class="actions">
+          <a class="btn primary" href="#vision">Zum Portal</a>
+          <a class="btn" href="https://github.com/Myopenai/sociatysocialsoftwareshop">GitHub Repository</a>
+        </div>
+        <p style="margin-top:12px;color:#bcd7ff;">Deterministische Ports, Multi‑Device‑Discovery, Sandbox‑Builds, sofort lauffähig.</p>
+      </div>
+
+      <!-- Morphing modules scene -->
+      <div class="morph" aria-label="Morphende Module und Verdrahtung">
+        <div class="node" style="top:36px;left:36px"></div>
+        <div class="node" style="top:180px;left:120px;animation-delay:.6s"></div>
+        <div class="node" style="top:80px;left:300px;animation-delay:1.2s"></div>
+        <div class="node" style="top:200px;left:460px;animation-delay:1.8s"></div>
+
+        <!-- Wires (auto-wiring illusion) -->
+        <div class="wire" style="top:80px;left:176px;width:130px;transform:rotate(8deg)"></div>
+        <div class="wire" style="top:220px;left:240px;width:110px;transform:rotate(-12deg)"></div>
+        <div class="wire" style="top:140px;left:360px;width:140px;transform:rotate(6deg)"></div>
+
+        <!-- CEOC circle -->
+        <div class="circle" aria-label="CEOC-Zirkel">
+          <div class="dot" style="top:-6px;left:calc(50% - 8px)"></div>
+          <div class="dot" style="bottom:-6px;left:calc(50% - 8px)"></div>
+          <div class="dot" style="left:-6px;top:calc(50% - 8px)"></div>
+          <div class="dot" style="right:-6px;top:calc(50% - 8px)"></div>
+          <div style="color:#bcd7ff;text-align:center;font-size:13px;">CEOC‑Zirkel</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Vision -->
+    <section id="vision">
+      <h2>Vision</h2>
+      <p>Die Fabrikage automatisiert den gesamten Produktzyklus: Prompt → IR → Auto‑Wiring → Code → Tests → Bundles → CI/CD → Deployment → Monitoring → Rollback. Der User gibt nur Prompts ein; das System beherrscht Ports, Geräte, Policies und Produktionsentscheidungen vollständig.</p>
+      <div class="grid">
+        <div class="card">
+          <h3>Auto‑Wiring</h3>
+          <p>Typed Ports (Data/Event/Resource), Adapter‑Synthese (Map/Convert/Validate/Aggregate), transaktionale Verdrahtung.</p>
+          <span class="pill">DTOMapper</span><span class="pill">UnitMap</span><span class="pill">SchemaInfer</span>
+        </div>
+        <div class="card">
+          <h3>AI‑Code‑Generator</h3>
+          <p>Hybride Templates + lokale Modelle erzeugen Produktionscode, Tests, Docs und Fixboxes mit Guardrails.</p>
+          <span class="pill">CRUD/API/UI</span><span class="pill">Pipelines</span><span class="pill">Simulation</span>
+        </div>
+        <div class="card">
+          <h3>One‑Click Orchestration</h3>
+          <p>Deterministische Ports, Startreihenfolge, Health‑Checks, Multi‑Device Discovery, sofortige UI‑Öffnung.</p>
+          <span class="pill">Sandbox</span><span class="pill">Health</span><span class="pill">Discovery</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- CEOC -->
+    <section id="ceoc">
+      <h2>CEOC‑Zirkel</h2>
+      <p>Jeder CEOC verantwortet eine Fläche (Modul/Domäne); alle CEOCs gemeinsam bilden den Zirkel, der den Einstichpunkt für neue Produkte setzt. Das Governance‑Modell ist offen, dokumentiert und transparent.</p>
+      <div class="grid">
+        <div class="card"><h3>Flächen</h3><p>AI‑Integration, Core, FABRIQUE, Observability, Marketplace, Security.</p></div>
+        <div class="card"><h3>Entscheidungen</h3><p>Gemeinsam getroffen, öffentlich dokumentiert, auditierbar.</p></div>
+        <div class="card"><h3>Teilnahme</h3><p>Forks, PRs, Issues, Bundles – freie Mitarbeit innerhalb und außerhalb.</p></div>
+      </div>
+    </section>
+
+    <!-- Teilnahme -->
+    <section id="teilnahme">
+      <h2>Teilnahme & Mitarbeit</h2>
+      <p>Jede Person kann klonen, forken, deployen. Mitarbeit erfolgt über Pull Requests, Issues, Bundles und Marketplace‑Beiträge. Fabrikage ist frei; Produkte können je nach Developer‑Dokumentation lizenziert/patentiert sein.</p>
+      <div class="grid">
+        <div class="card"><h3>CONTRIBUTING</h3><p>Leitfaden für Code, Tests, Docs, Policies.</p></div>
+        <div class="card"><h3>GOVERNANCE</h3><p>CEOC‑Zirkel, Rollen, Prozesse.</p></div>
+        <div class="card"><h3>CODE OF CONDUCT</h3><p>Respekt, Transparenz, Zusammenarbeit.</p></div>
+      </div>
+    </section>
+
+    <!-- Modulkatalog -->
+    <section id="module">
+      <h2>Modulkatalog (Taxonomie)</h2>
+      <p>Alle Wissensbereiche als Module mit Ports/Adapters: Physik, Chemie, Biologie, Geo; Maschinenbau, Elektrotechnik, Informatik, Bau; Medizin, Psychologie, Pharmazie; Soziologie, Politik, Wirtschaft, Geschichte; Kunst, Musik, Literatur; IT, Energie, Transport, Produktion; Institutionen; Berufe.</p>
+      <div class="grid">
+        <div class="card"><h3>Physics.Core</h3><p>Observations → DerivedQuantities, UnitMap, DimensionalCheck.</p></div>
+        <div class="card"><h3>Chemie.Analytik</h3><p>Spectra → Concentrations, CalibrationCurveFit, NoiseFilter.</p></div>
+        <div class="card"><h3>Informatik.CRUD/API/UI</h3><p>EntitySchema → ApiRoutes/Views, DTOMapper, ValidationMap.</p></div>
+      </div>
+    </section>
+
+    <!-- Architektur -->
+    <section id="architektur">
+      <h2>Architektur</h2>
+      <p>Frontend: React/TS. Backend: Node.js + .NET Microservices. Daten: Postgres/Redis, InfluxDB/MongoDB. Echtzeit: MQTT + WebSockets. Container: Docker + Kubernetes. CI/CD: GitHub Actions + GitLab CI. AI: ML, NLP, CV.</p>
+      <div class="grid">
+        <div class="card"><h3>Core / API</h3><p>Geschäftslogik, Schnittstellen, Sicherheitskomponenten.</p></div>
+        <div class="card"><h3>FABRIQUE</h3><p>Fabriksteuerung, Planung, Materialfluss, Qualität.</p></div>
+        <div class="card"><h3>AI_Integration</h3><p>Wartung, Sprache, Vision.</p></div>
+      </div>
+    </section>
+
+    <!-- CI/CD -->
+    <section id="cicd">
+      <h2>CI/CD</h2>
+      <p>Watchdog → Build → Test → Deployment. Blue‑Green/Canary. Health‑Monitor (Prom/Grafana). Rollback Manager. Autoscaling (Terraform/AWS). ELK‑Stack. GitHub Actions & Workflows.</p>
+      <div class="grid">
+        <div class="card"><h3>Watchdog</h3><p>Chokidar‑basiert; erkennt Änderungen.</p></div>
+        <div class="card"><h3>Deploy</h3><p>Ansible/Kubernetes, Blue‑Green + Canary.</p></div>
+        <div class="card"><h3>Health/Rollback</h3><p>Healthchecks, Monitoring, schneller Rückfall.</p></div>
+      </div>
+    </section>
+
+    <!-- Sicherheit -->
+    <section id="sicherheit">
+      <h2>Sicherheit & Provenance</h2>
+      <p>RBAC, Zwei‑Faktor, OIDC/SAML. Lizenz‑Whitelist, CVE‑Gates. Secrets zur Laufzeit. NetworkPolicy default‑deny, PodSecurity restricted. SBOM (CycloneDX/SPDX), DSSE Signaturen, Ledger‑Notarisierung.</p>
+      <div class="grid">
+        <div class="card"><h3>Policies</h3><p>Pre‑Wire/Pre‑Deploy Gates.</p></div>
+        <div class="card"><h3>Provenance</h3><p>Signaturen & SBOMs.</p></div>
+        <div class="card"><h3>Observability</h3><p>Logs, Metrics, Traces, Dashboards.</p></div>
+      </div>
+    </section>
+
+    <!-- Roadmap -->
+    <section id="roadmap">
+      <h2>Roadmap</h2>
+      <p>Kurzfristig: Kernmodule & Pilot. Mittelfristig: Integrationen & Skalierung. Langfristig: KI‑Optimierung, Automatisierung, Internationalisierung, Marketplace.</p>
+      <div class="grid">
+        <div class="card"><h3>0–6 Monate</h3><ul class="list"><li>IR/Validatoren</li><li>Generatoren</li><li>Wiring Engine</li></ul></div>
+        <div class="card"><h3>6–12 Monate</h3><ul class="list"><li>CI/CD voll</li><li>Observability Atlas</li><li>Security Gates</li></ul></div>
+        <div class="card"><h3>12+ Monate</h3><ul class="list"><li>Marketplace</li><li>Internationalisierung</li><li>DR/Notarisierung</li></ul></div>
+      </div>
+    </section>
+
+    <!-- Marketplace -->
+    <section id="marketplace">
+      <h2>Marketplace</h2>
+      <p>Bundles: Code, Configs, SBOM, Signaturen, Installer, Docs. Install: ein Kommando. Integration: Produkte erscheinen als Module, sofort verdrahtbar und regenerierbar.</p>
+      <div class="grid">
+        <div class="card"><h3>Bundler</h3><p>Erstellt signierte Release‑Artefakte.</p></div>
+        <div class="card"><h3>Installer</h3><p>Migrations & Policy‑Validierung.</p></div>
+        <div class="card"><h3>Publisher</h3><p>Versionen, Badges, Changelogs.</p></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div>© 2025 FABRIKAGE. Offen, modular, auditierbar. <a href="https://github.com/Myopenai/sociatysocialsoftwareshop">GitHub</a></div>
+    <div>Startbefehl: Ein Klick, dann Prompts. Alles andere ist automatisch.</div>
+  </footer>
+
+  <script>
+    // Smooth scroll for nav
+    document.querySelectorAll('a[href^="#"]').forEach(a=>{
+      a.addEventListener('click', e=>{
+        const id=a.getAttribute('href').slice(1);
+        const el=document.getElementById(id);
+        if(el){ e.preventDefault(); el.scrollIntoView({behavior:'smooth',block:'start'}); }
+      });
+    });
+
+    // Dynamic wire animation (gentle shimmer)
+    const wires = document.querySelectorAll('.wire');
+    let t=0;
+    setInterval(()=>{
+      t+=0.02;
+      wires.forEach((w,i)=>{
+        w.style.filter = `drop-shadow(0 0 ${8+Math.sin(t+i)*4}px rgba(41,228,255,0.5))`;
+        w.style.opacity = 0.8 + Math.sin(t*2+i)*0.15;
+      });
+    }, 50);
+
+    // Accessibility: reduce motion if user prefers
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if(mediaQuery.matches){
+      document.querySelectorAll('.node,.circle').forEach(el=> el.style.animation='none');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+{
+  "id": "F000001",
+  "name": "Zinseszins",
+  "description": "Berechnet das Endkapital bei Zinseszins",
+  "inputs": [
+    {
+      "name": "Kapital",
+      "type": "number",
+      "dimension": "EUR",
+      "constraints": { "min": 0 }
+    },
+    {
+      "name": "Zinssatz",
+      "type": "number",
+      "dimension": "percent",
+      "constraints": { "min": 0, "max": 100 }
+    },
+    {
+      "name": "Laufzeit",
+      "type": "number",
+      "dimension": "years",
+      "constraints": { "min": 0 }
+    }
+  ],
+  "output": {
+    "name": "Endkapital",
+    "type": "number",
+    "dimension": "EUR"
+  },
+  "domain": ["Finanz", "Ökonomie"],
+  "formula": "K_n = K_0 * (1 + p/100)^n",
+  "implementation": {
+    "python": "def zinseszins(kapital, zinssatz, laufzeit):\n    return kapital * (1 + zinssatz / 100) ** laufzeit",
+    "javascript": "function zinseszins(kapital, zinssatz, laufzeit) {\n    return kapital * Math.pow(1 + zinssatz / 100, laufzeit);\n}",
+    "rust": "fn zinseszins(kapital: f64, zinssatz: f64, laufzeit: f64) -> f64 {\n    kapital * (1.0 + zinssatz / 100.0).powf(laufzeit)\n}",
+    "go": "func zinseszins(kapital, zinssatz, laufzeit float64) float64 {\n    return kapital * math.Pow(1 + zinssatz/100, laufzeit)\n}",
+    "java": "public static double zinseszins(double kapital, double zinssatz, double laufzeit) {\n    return kapital * Math.pow(1 + zinssatz / 100.0, laufzeit);\n}",
+    "cpp": "double zinseszins(double kapital, double zinssatz, double laufzeit) {\n    return kapital * pow(1 + zinssatz / 100.0, laufzeit);\n}",
+    "csharp": "public static double Zinseszins(double kapital, double zinssatz, double laufzeit) {\n    return kapital * Math.Pow(1 + zinssatz / 100.0, laufzeit);\n}",
+    "swift": "func zinseszins(kapital: Double, zinssatz: Double, laufzeit: Double) -> Double {\n    return kapital * pow(1 + zinssatz / 100, laufzeit)\n}",
+    "kotlin": "fun zinseszins(kapital: Double, zinssatz: Double, laufzeit: Double): Double {\n    return kapital * Math.pow(1 + zinssatz / 100.0, laufzeit)\n}",
+    "typescript": "function zinseszins(kapital: number, zinssatz: number, laufzeit: number): number {\n    return kapital * Math.pow(1 + zinssatz / 100, laufzeit);\n}"
+  },
+  "dependencies": [],
+  "complexity": "low",
+  "tags": ["zins", "finanz", "kapital", "berechnung"]
+}
+
+

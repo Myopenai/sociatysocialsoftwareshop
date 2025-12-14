@@ -1,0 +1,60 @@
+{
+  "system": {
+    "name": "Fabrikage Development System",
+    "environment": "development",
+    "logLevel": "debug"
+  },
+  "database": {
+    "host": "localhost",
+    "port": 5432,
+    "name": "fabrikage_dev",
+    "user": "dev_user",
+    "connectionString": "Server=localhost;Database=fabrikage_dev;User Id=dev_user;Password=dev_password;"
+  },
+  "api": {
+    "port": 3001,
+    "baseUrl": "http://localhost:3001",
+    "corsOrigins": ["http://localhost:3000", "http://localhost:8080"],
+    "enableSwagger": true
+  },
+  "modules": {
+    "autoExecution": {
+      "enabled": true,
+      "schedule": "*/5 * * * *"
+    },
+    "coreProtocols": {
+      "apiEndpoint": "http://localhost:3001/api"
+    }
+  },
+  "monitoring": {
+    "enabled": true,
+    "prometheus": {
+      "port": 9090,
+      "endpoint": "/metrics"
+    },
+    "grafana": {
+      "port": 3000,
+      "username": "admin",
+      "password": "admin"
+    },
+    "alertmanager": {
+      "port": 9093
+    }
+  },
+  "externalServices": {
+    "email": {
+      "provider": "smtp",
+      "host": "smtp.gmail.com",
+      "port": 587,
+      "secure": false,
+      "auth": {
+        "user": "dev@example.com",
+        "pass": "dev-email-password"
+      }
+    }
+  },
+  "logging": {
+    "level": "debug",
+    "file": "fabrikage-dev.log"
+  }
+}

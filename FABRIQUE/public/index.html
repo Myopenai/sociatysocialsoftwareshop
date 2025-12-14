@@ -1,0 +1,76 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Fabrication Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .status { padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .online { background-color: #d4edda; }
+        .offline { background-color: #f8d7da; }
+        .jobs { margin-top: 20px; }
+        .job { padding: 10px; margin: 5px 0; border: 1px solid #ddd; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <h1>Fabrication Dashboard</h1>
+    <div id="status" class="status">Loading status...</div>
+    <div>
+        <button onclick="startJob()">Start New Job</button>
+        <input type="text" id="jobType" placeholder="Job type" value="3D Print">
+    </div>
+    <div id="jobs" class="jobs"></div>
+
+    <script>
+        async function updateStatus() {
+            try {
+                const response = await fetch('/api/fabrication/status');
+                const data = await response.json();
+                document.getElementById('status').className = 'status ' + (data.operational ? 'online' : 'offline');
+                document.getElementById('status').innerHTML = '<strong>Status:</strong> ' + (data.operational ? 'Online' : 'Offline') +
+                    '<br><strong>Uptime:</strong> ' + Math.floor(data.uptime || 0) + 's' +
+                    '<br><strong>Memory:</strong> ' + Math.round((data.memoryUsage.heapUsed / 1024 / 1024) * 100) / 100 + 'MB used';
+            } catch (error) {
+                document.getElementById('status').className = 'status offline';
+                document.getElementById('status').innerHTML = 'Error fetching status';
+                console.error('Error:', error);
+            }
+        }
+
+        async function startJob() {
+            const jobType = document.getElementById('jobType').value || '3D Print';
+            try {
+                const response = await fetch('/api/fabrication/jobs/start', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ type: jobType })
+                });
+                const result = await response.json();
+                alert('Job started: ' + result.jobId);
+                updateJobs();
+            } catch (error) {
+                console.error('Error starting job:', error);
+                alert('Failed to start job');
+            }
+        }
+
+        async function completeJob(jobId) {
+            try {
+                await fetch('/api/fabrication/jobs/' + jobId + '/complete', { method: 'POST' });
+                updateJobs();
+            } catch (error) {
+                console.error('Error completing job:', error);
+            }
+        }
+
+        async function updateJobs() {
+            // In a real app, you would fetch jobs from an API endpoint
+            // For now, we'll just show a message
+            document.getElementById('jobs').innerHTML = '<p>Job history will appear here</p>';
+        }
+
+        // Update status every 5 seconds
+        updateStatus();
+        setInterval(updateStatus, 5000);
+    </script>
+</body>
+</html>

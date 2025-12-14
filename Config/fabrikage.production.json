@@ -1,0 +1,123 @@
+{
+  "system": {
+    "name": "Fabrikage Production System",
+    "environment": "production",
+    "logLevel": "warn"
+  },
+  "database": {
+    "host": "production-db-cluster.example.com",
+    "port": 5432,
+    "name": "fabrikage_prod",
+    "user": "${DB_USER}",
+    "connectionString": "${DATABASE_URL}",
+    "ssl": true,
+    "pool": {
+      "max": 20,
+      "min": 5,
+      "idleTimeoutMillis": 30000
+    }
+  },
+  "api": {
+    "port": 3000,
+    "baseUrl": "https://api.fabrikage.example.com",
+    "corsOrigins": ["https://fabrikage.example.com"],
+    "enableSwagger": false,
+    "rateLimit": {
+      "windowMs": 900000,
+      "max": 100,
+      "message": "Too many requests, please try again later."
+    },
+    "trustProxy": true
+  },
+  "modules": {
+    "autoExecution": {
+      "enabled": true,
+      "schedule": "0 2 * * *"
+    },
+    "coreProtocols": {
+      "apiEndpoint": "https://api.fabrikage.example.com/api",
+      "timeout": 30000
+    },
+    "observabilityAtlas": {
+      "enabled": true,
+      "retentionDays": 90,
+      "metricsEnabled": true
+    }
+  },
+  "monitoring": {
+    "enabled": true,
+    "prometheus": {
+      "port": 9090,
+      "endpoint": "/metrics"
+    },
+    "grafana": {
+      "port": 3000,
+      "auth": {
+        "type": "oauth2",
+        "clientId": "${GRAFANA_CLIENT_ID}",
+        "clientSecret": "${GRAFANA_CLIENT_SECRET}",
+        "authUrl": "https://auth.example.com/oauth2/authorize",
+        "tokenUrl": "https://auth.example.com/oauth2/token"
+      }
+    },
+    "alertmanager": {
+      "port": 9093,
+      "webhookUrl": "https://alerts.fabrikage.example.com/webhook"
+    },
+    "sentry": {
+      "dsn": "${SENTRY_DSN}",
+      "environment": "production"
+    }
+  },
+  "externalServices": {
+    "email": {
+      "provider": "ses",
+      "region": "eu-west-1",
+      "from": "noreply@fabrikage.example.com"
+    },
+    "storage": {
+      "provider": "s3",
+      "bucket": "fabrikage-prod-storage",
+      "region": "eu-west-1"
+    }
+  },
+  "security": {
+    "jwtSecret": "${JWT_SECRET}",
+    "passwordSaltRounds": 10,
+    "csp": {
+      "defaultSrc": ["'self'"],
+      "scriptSrc": ["'self'", "'unsafe-inline'", "cdn.example.com"],
+      "styleSrc": ["'self'", "'unsafe-inline'"],
+      "imgSrc": ["'self'", "data:", "cdn.example.com"]
+    }
+  },
+  "logging": {
+    "level": "info",
+    "file": "/var/log/fabrikage/production.log",
+    "format": "json",
+    "rotation": {
+      "size": "50m",
+      "maxFiles": 14,
+      "compress": true
+    },
+    "sentry": {
+      "level": "error"
+    }
+  },
+  "backup": {
+    "enabled": true,
+    "schedule": "0 0 * * *",
+    "retentionDays": 30,
+    "storage": {
+      "type": "s3",
+      "bucket": "fabrikage-backups-prod",
+      "path": "daily/"
+    },
+    "databases": ["fabrikage_prod"],
+    "notifications": {
+      "onSuccess": true,
+      "onFailure": true,
+      "email": "devops@example.com"
+    }
+  }
+}

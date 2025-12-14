@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Formula Schema",
+  "type": "object",
+  "required": ["id", "name", "inputs", "output", "domain", "formula"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^F[0-9]{6}$"
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "inputs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "type"],
+        "properties": {
+          "name": { "type": "string" },
+          "type": { "type": "string", "enum": ["number", "string", "array", "object", "boolean"] },
+          "dimension": { "type": "string" },
+          "constraints": { "type": "object" },
+          "default": {}
+        }
+      }
+    },
+    "output": {
+      "type": "object",
+      "required": ["name", "type"],
+      "properties": {
+        "name": { "type": "string" },
+        "type": { "type": "string" },
+        "dimension": { "type": "string" }
+      }
+    },
+    "domain": {
+      "type": "array",
+      "items": { "type": "string", "enum": ["Finanz", "Energie", "Statistik", "Physik", "Chemie", "Biologie", "Ökonomie", "Haushalt", "Wissenschaft"] }
+    },
+    "formula": {
+      "type": "string"
+    },
+    "implementation": {
+      "type": "object",
+      "properties": {
+        "python": { "type": "string" },
+        "javascript": { "type": "string" },
+        "rust": { "type": "string" },
+        "go": { "type": "string" },
+        "java": { "type": "string" },
+        "cpp": { "type": "string" },
+        "csharp": { "type": "string" },
+        "swift": { "type": "string" },
+        "kotlin": { "type": "string" },
+        "typescript": { "type": "string" }
+      }
+    },
+    "dependencies": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "complexity": {
+      "type": "string",
+      "enum": ["low", "medium", "high"]
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}
+
+

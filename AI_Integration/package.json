@@ -1,0 +1,11 @@
+{
+  "name": "fabrikage-ai-extension",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "compile": "tsc -p ."
+  },
+  "devDependencies": {
+    "typescript": "^5.2.2"
+  }
+}
