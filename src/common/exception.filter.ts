@@ -21,7 +21,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     this.logger.error(
       message,
-      exception instanceof Error ? exception.stack : '',
+      exception instanceof Error ? exception.stack ?? '' : '',
       'ExceptionFilter',
     );
 
