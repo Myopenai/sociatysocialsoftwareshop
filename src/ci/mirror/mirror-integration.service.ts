@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { exec, spawn } from 'child_process';
 import { promisify } from 'util';
 import { join } from 'path';
-import { SettingsService } from '../settings/settings.service';
+import { SettingsService } from '../../settings/settings.service';
 
 const execAsync = promisify(exec);
 

@@ -28,7 +28,8 @@ async function bootstrap() {
   const settings = app.get(SettingsService);
   ensureDirs(settings.get().runtime.requiredDirs);
 
-  await app.listen(3000);
-  logger.log('FABRIQUE is running on: http://localhost:3000');
+  const port = process.env.PORT || 3000;
+  await app.listen(port);
+  logger.log(`FABRIQUE is running on port ${port}`);
 }
 bootstrap();
